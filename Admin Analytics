@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FixNest Analytics</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+:root{
+--green:#2e7d32;
+--light:#eef7f0;
+--card:#ffffff;
+--text:#444;
+}
+
+body{
+font-family:"Segoe UI",sans-serif;
+background:var(--light);
+margin:0;
+padding:20px;
+}
+
+/* HEADER */
+.header{
+text-align:center;
+margin-bottom:20px;
+}
+
+.header h1{
+color:var(--green);
+font-size:26px;
+}
+
+/* BACK BUTTON */
+.backBtn{
+position:absolute;
+top:20px;
+right:20px;
+}
+
+/* STATS */
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-bottom:20px;
+}
+
+.stat{
+background:var(--card);
+padding:12px;
+border-radius:10px;
+text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+.stat h3{
+margin:0;
+font-size:14px;
+color:var(--text);
+}
+
+.stat p{
+margin-top:5px;
+font-weight:bold;
+color:var(--green);
+font-size:18px;
+}
+
+/* GRID (FIXED 2x2) */
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+/* CARD */
+.card{
+background:var(--card);
+padding:15px;
+border-radius:12px;
+box-shadow:0 6px 15px rgba(0,0,0,0.08);
+}
+
+.card h3{
+font-size:15px;
+margin-bottom:10px;
+color:var(--text);
+text-align:center;
+}
+
+/* BIGGER CHART */
+canvas{
+height:260px !important;
+}
+
+/* BUTTON */
+button{
+padding:6px 14px;
+background:var(--green);
+color:white;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:13px;
+}
+
+button:hover{
+background:#1b5e20;
+}
+
+</style>
+</head>
+
+<body>
+
+<button class="backBtn" onclick="goBack()">⬅ Back</button>
+
+<div class="header">
+<h1>📊 FixNest Analytics</h1>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+<div class="stat"><h3>Total</h3><p id="totalReq">0</p></div>
+<div class="stat"><h3>Pending</h3><p id="pending">0</p></div>
+<div class="stat"><h3>Assigned</h3><p id="assigned">0</p></div>
+<div class="stat"><h3>Completed</h3><p id="completed">0</p></div>
+</div>
+
+<!-- GRAPHS -->
+<div class="grid">
+
+<div class="card">
+<h3>📦 Product Requests</h3>
+<canvas id="productChart"></canvas>
+</div>
+
+<div class="card">
+<h3>👨‍🔧 Technician Workload</h3>
+<canvas id="techChart"></canvas>
+</div>
+
+<div class="card">
+<h3>📈 Status Overview</h3>
+<canvas id="statusChart"></canvas>
+</div>
+
+<div class="card">
+<h3>📅 Requests Over Time</h3>
+<canvas id="timeChart"></canvas>
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyCgKI-RxIdn2_LYhhBvsIx7etRYrXG4rig",
+authDomain: "ai-customer-support-assi-5af0d.firebaseapp.com",
+projectId: "ai-customer-support-assi-5af0d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function loadAnalytics(){
+
+let reqSnap = await getDocs(collection(db,"technicianRequests"));
+
+let productCount = {};
+let techWork = {};
+let statusCount = {Pending:0,Assigned:0,Completed:0};
+let dateCount = {};
+
+reqSnap.forEach(doc=>{
+let d = doc.data();
+
+productCount[d.product] = (productCount[d.product] || 0) + 1;
+
+if(d.assignedTech){
+techWork[d.assignedTech] = (techWork[d.assignedTech] || 0) + 1;
+}
+
+statusCount[d.status] = (statusCount[d.status] || 0) + 1;
+
+if(d.preferredDate){
+dateCount[d.preferredDate] = (dateCount[d.preferredDate] || 0) + 1;
+}
+
+});
+
+/* STATS */
+totalReq.innerText = reqSnap.size;
+pending.innerText = statusCount.Pending || 0;
+assigned.innerText = statusCount.Assigned || 0;
+completed.innerText = statusCount.Completed || 0;
+
+/* COLOR SET */
+const colors = [
+"#ff6384","#36a2eb","#ffce56","#4caf50",
+"#ab47bc","#ffa726","#26c6da","#8d6e63"
+];
+
+/* PRODUCT */
+new Chart(productChart,{
+type:"bar",
+data:{
+labels:Object.keys(productCount),
+datasets:[{
+data:Object.values(productCount),
+backgroundColor:colors
+}]
+}
+});
+
+/* TECH */
+/* TOP PRODUCTS (PIE) */
+/* TOP PRODUCTS (PIE) */
+new Chart(techChart,{
+type:"pie",
+data:{
+labels:Object.keys(productCount),
+datasets:[{
+data:Object.values(productCount),
+backgroundColor: [
+  "#5C6BC0", // soft indigo
+  "#7E57C2", // medium purple
+  "#42A5F5", // balanced blue
+  "#26C6DA", // calm cyan
+  "#8D6E63", // muted brown
+  "#78909C", // blue grey
+  "#AB47BC", // soft violet
+  "#3F51B5"  // deep indigo
+]
+}]
+}
+});
+
+/* STATUS */
+new Chart(statusChart,{
+type:"doughnut",
+data:{
+labels:Object.keys(statusCount),
+datasets:[{
+data:Object.values(statusCount),
+backgroundColor:["#ff9800","#2196f3","#4caf50"]
+}]
+}
+});
+
+/* TIME */
+new Chart(timeChart,{
+type:"line",
+data:{
+labels:Object.keys(dateCount),
+datasets:[{
+data:Object.values(dateCount),
+borderColor:"#e91e63",
+backgroundColor:"rgba(233,30,99,0.2)",
+fill:true,
+tension:0.4
+}]
+}
+});
+
+}
+
+window.goBack = ()=>{
+window.location.href="admin.html";
+};
+
+loadAnalytics();
+
+</script>
+
+</body>
+</html>
