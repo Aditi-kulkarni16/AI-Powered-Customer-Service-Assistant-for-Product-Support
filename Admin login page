@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FixNest Admin Login</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Segoe UI",sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:
+linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)),
+url("images/bgadmin.png") no-repeat center center/cover;
+}
+
+.container{
+background:white;
+padding:30px;
+width:350px;
+border-radius:16px;
+box-shadow:0 10px 30px rgba(0,0,0,0.15);
+text-align:center;
+}
+
+h1{
+color:#1b5e20;
+margin-bottom:20px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:12px;
+background:#2e7d32;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+}
+
+button:hover{
+background:#1b5e20;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.hidden{
+display:none;
+}
+
+.back{
+margin-top:10px;
+color:#2e7d32;
+cursor:pointer;
+font-size:14px;
+}
+
+.error{
+color:red;
+font-size:12px;
+display:none;
+margin-top:5px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔐 Admin Panel</h1>
+
+<!-- START -->
+<div id="start">
+<button onclick="showLogin()">Please Login</button>
+</div>
+
+<!-- LOGIN FORM -->
+<div id="loginForm" class="hidden">
+
+<input type="email" id="email" placeholder="Admin Email">
+<div class="error" id="emailError">Wrong Email</div>
+
+<input type="password" id="password" placeholder="Password">
+<div class="error" id="passError">Wrong Password</div>
+
+<button onclick="login()">Login</button>
+
+<div class="back" onclick="goBack()">⬅ Back</div>
+
+</div>
+
+</div>
+
+<!-- FIREBASE (only for logging activity) -->
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* CONFIG */
+const firebaseConfig = {
+apiKey: "AIzaSyCgKI-RxIdn2_LYhhBvsIx7etRYrXG4rig",
+authDomain: "ai-customer-support-assi-5af0d.firebaseapp.com",
+projectId: "ai-customer-support-assi-5af0d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* FIXED CREDENTIALS */
+const ADMIN_EMAIL = "project123@gmail.com";
+const ADMIN_PASS = "123456";
+
+/* UI */
+window.showLogin = ()=>{
+start.style.display="none";
+loginForm.style.display="block";
+};
+
+window.goBack = ()=>{
+start.style.display="block";
+loginForm.style.display="none";
+};
+
+/* LOGIN */
+window.login = async ()=>{
+
+let email = document.getElementById("email").value.trim();
+let password = document.getElementById("password").value.trim();
+
+emailError.style.display="none";
+passError.style.display="none";
+
+/* CHECK FIXED LOGIN */
+
+if(email !== ADMIN_EMAIL){
+emailError.style.display="block";
+return;
+}
+
+if(password !== ADMIN_PASS){
+passError.style.display="block";
+return;
+}
+
+/* STORE LOGIN IN DB */
+
+await addDoc(collection(db,"adminLogins"),{
+email: email,
+time: new Date()
+});
+
+alert("Login Successful");
+
+/* REDIRECT */
+window.location.href = "admin.html";
+
+};
+
+</script>
+
+</body>
+</html>
