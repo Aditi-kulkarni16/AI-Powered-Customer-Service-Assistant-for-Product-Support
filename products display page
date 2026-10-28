@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AI Support Store</title>
+<title>FixNest - Products</title>
 
 <style>
 
@@ -28,9 +28,32 @@ align-items:center;
 padding:15px 40px;
 }
 
+.left{
+display:flex;
+align-items:center;
+gap:30px;
+}
+
 .logo{
 font-size:22px;
 font-weight:600;
+cursor:pointer;
+}
+
+.nav-links{
+display:flex;
+gap:20px;
+}
+
+.nav-links a{
+color:white;
+text-decoration:none;
+font-size:15px;
+transition:0.3s;
+}
+
+.nav-links a:hover{
+opacity:0.8;
 }
 
 .search-bar{
@@ -125,12 +148,24 @@ color:#555;
 <!-- NAVBAR -->
 
 <div class="navbar">
-<div class="logo">AI Support Store</div>
+
+<div class="left">
+
+<div class="logo" onclick="goHome()">🤖 FixNest</div>
+
+<div class="nav-links">
+<a href="home.html">Home</a>
+<a href="about.html">About</a>
+<a href="emergency.html">Emergency contact</a>
+</div>
+
+</div>
 
 <div class="search-bar">
 <input type="text" id="searchInput" placeholder="Search products..." onkeyup="searchProduct()">
 <button onclick="searchProduct()">Search</button>
 </div>
+
 </div>
 
 <!-- PRODUCTS -->
@@ -140,82 +175,86 @@ color:#555;
 <div class="card" data-page="vacuum.html" onclick="openPage(this)">
 <img src="images/vacuum.jpg.jpg">
 <div class="title product-name">Vacuum Cleaner</div>
-<div class="price">₹3,999</div>
+
 <button class="btn" onclick="event.stopPropagation(); openPage(this.parentElement)">Get Support</button>
 </div>
 
 <div class="card" data-page="ricecooker.html" onclick="openPage(this)">
 <img src="images/ricecooker.jpg.jpg">
 <div class="title product-name">Rice Cooker</div>
-<div class="price">₹2,199</div>
+
 <button class="btn" onclick="event.stopPropagation(); openPage(this.parentElement)">Get Support</button>
 </div>
 
 <div class="card" data-page="extension.html" onclick="openPage(this)">
 <img src="images/extension.jpg.jpg">
 <div class="title product-name">Extension Board</div>
-<div class="price">₹499</div>
+
 <button class="btn" onclick="event.stopPropagation(); openPage(this.parentElement)">Get Support</button>
 </div>
 
 <div class="card" data-page="led.html" onclick="openPage(this)">
 <img src="images/led.jpg.jpg">
 <div class="title product-name">LED Lamp</div>
-<div class="price">₹699</div>
+
 <button class="btn" onclick="event.stopPropagation(); openPage(this.parentElement)">Get Support</button>
 </div>
 
 <div class="card" data-page="blender.html" onclick="openPage(this)">
 <img src="images/blender.jpg.jpg">
 <div class="title product-name">Hand Blender</div>
-<div class="price">₹1,299</div>
+
 <button class="btn" onclick="event.stopPropagation(); openPage(this.parentElement)">Get Support</button>
 </div>
 
 <div class="card" data-page="toaster.html" onclick="openPage(this)">
 <img src="images/toaster.jpg.jpg">
 <div class="title product-name">Toaster</div>
-<div class="price">₹1,499</div>
+
 <button class="btn" onclick="event.stopPropagation(); openPage(this.parentElement)">Get Support</button>
 </div>
 
 <div class="card" data-page="iron.html" onclick="openPage(this)">
 <img src="images/iron.jpg.jpg">
 <div class="title product-name">Electric Iron</div>
-<div class="price">₹1,199</div>
+
 <button class="btn" onclick="event.stopPropagation(); openPage(this.parentElement)">Get Support</button>
 </div>
 
 <div class="card" data-page="fan.html" onclick="openPage(this)">
 <img src="images/fan.jpg.jpg">
 <div class="title product-name">Table Fan</div>
-<div class="price">₹1,599</div>
+
 <button class="btn" onclick="event.stopPropagation(); openPage(this.parentElement)">Get Support</button>
 </div>
 
 <div class="card" data-page="kettle.html" onclick="openPage(this)">
 <img src="images/kettle.jpg.jpg">
 <div class="title product-name">Electric Kettle</div>
-<div class="price">₹1,099</div>
+
 <button class="btn" onclick="event.stopPropagation(); openPage(this.parentElement)">Get Support</button>
 </div>
 
 <div class="card" data-page="mixer.html" onclick="openPage(this)">
 <img src="images/mixer.jpg.jpg">
 <div class="title product-name">Mixer Grinder</div>
-<div class="price">₹3,499</div>
+
 <button class="btn" onclick="event.stopPropagation(); openPage(this.parentElement)">Get Support</button>
 </div>
 
 </div>
 
-<!-- NO RESULT MESSAGE -->
+<!-- NO RESULT -->
 
 <p id="noResult">No product found</p>
 
 <!-- SCRIPT -->
 
 <script>
+
+function goHome(){
+window.location.href="home.html";
+}
 
 function searchProduct(){
 let input = document.getElementById("searchInput").value.toLowerCase();
@@ -242,6 +281,12 @@ let page = element.getAttribute("data-page");
 window.location.href = page;
 }
 
+</script>
+
+<!-- CHATBOT -->
+
+<script>
+(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="AFu3-1WsaJGVoqn_MRx33";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
 </script>
 
 </body>
